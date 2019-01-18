@@ -73,30 +73,30 @@ const char*  daystrings[7]  =  {"Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sa
 /* BLYNK tokens
 
 */
-char reader_token[] = "88f9aca4374a4e7c9ffb7b84baa8eea2";
-char lock1_token[] = "4b750912ed5744efa7faaf2e09c394d4";
-char lock2_token[] = "fdcf2cc56ef04b7a8a8a0a6fdef59022";
+char reader_token[] = "token1";
+char lock1_token[] = "token2";
+char lock2_token[] = "token3";
 
 
 #if defined(MASTER_LOCK)
 
-char blynk_token[] = "88f9aca4374a4e7c9ffb7b84baa8eea2";
+char blynk_token[] = "token1";
 
 #elif defined(LOCK1_LOCK)
 
-char blynk_token[] = "4b750912ed5744efa7faaf2e09c394d4";
+char blynk_token[] = "token2";
 
 #else
 
-char blynk_token[] = "fdcf2cc56ef04b7a8a8a0a6fdef59022";
+char blynk_token[] = "token3";
 
 #endif
 /*
     WiFi credentials.
 */
 
-char ssid[] = "lburton";
-char pass[] = "8018368602";
+char ssid[] = "wifi";
+char pass[] = "password";
 
 /*
     Global data
