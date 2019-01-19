@@ -13,9 +13,9 @@
 //#define BLYNK_DEBUG
 
 // only uncoment one at a time
-//#define MASTER_LOCK true
+#define MASTER_LOCK true
 //#define LOCK1_LOCK  true
-#define LOCK2_LOCK  true
+//#define LOCK2_LOCK  true
 /*
    hardware defines
 */
@@ -64,39 +64,47 @@
 
 #define maxcards      20
 #define maxnamelength 20
-#define maxuidlength  8
+#define maxuidlength  15
 #define flagslength   1
-#define recordlength    (4 + maxnamelength + maxuidlength)   // 4 bytes fir the two ints + the max string lengths  for the name and uid
+#define recordlength    (4 + maxnamelength + maxuidlength)   // 4 bytes for the two ints + the max string lengths  for the name and uid
 
 const char*  daystrings[7]  =  {"Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"};
 
 /* BLYNK tokens
 
 */
-char reader_token[] = "token1";
-char lock1_token[] = "token2";
-char lock2_token[] = "token3";
+char reader_token[] = "88f9aca4374a4e7c9ffb7b84baa8eea2";
+char lock1_token[] = "4b750912ed5744efa7faaf2e09c394d4";
+char lock2_token[] = "fdcf2cc56ef04b7a8a8a0a6fdef59022";
 
+char readername[] = "nfclockreader";
+char lock1name[] = "nfclock1";
+char lock2name[] = "nfclock2";
 
 #if defined(MASTER_LOCK)
 
-char blynk_token[] = "token1";
+char blynk_token[] = "88f9aca4374a4e7c9ffb7b84baa8eea2";
+char modulename[] = "nfclockreader";
 
 #elif defined(LOCK1_LOCK)
 
-char blynk_token[] = "token2";
+char blynk_token[] = "4b750912ed5744efa7faaf2e09c394d4";
+char modulename[] = "nfclock1";
+
 
 #else
 
-char blynk_token[] = "token3";
+char blynk_token[] = "fdcf2cc56ef04b7a8a8a0a6fdef59022";
+char modulename[] = "nfclock2";
+
 
 #endif
 /*
     WiFi credentials.
 */
 
-char ssid[] = "wifi";
-char pass[] = "password";
+char ssid[] = "lburton";
+char pass[] = "8018368602";
 
 /*
     Global data
@@ -120,17 +128,11 @@ int talktome = 0;
 //define your default values here, if there are different values in config.json, they are overwritten.
 char mqtt_server[40];
 char mqtt_port[6] = "8080";
-//char blynk_token[34] = "YOUR_BLYNK_TOKEN";
 
 //flag for saving wifi data
 bool shouldSaveConfig = false;
 
 uint32_t versiondata = 0; // NFC hardware version
-
-Adafruit_FRAM_I2C   fram        = Adafruit_FRAM_I2C();
-uint16_t            framAddr    = 0;
-int                 validfram   = 0;
-
 String carddatafile = "/carddata.txt";
 File datafile;
 

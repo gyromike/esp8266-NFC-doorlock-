@@ -20,7 +20,7 @@ void writestringdata(uint16_t whatbyte, int howlong, String databuffer){
     byte s[maxnamelength+1];
     datafile.seek(DATASTART+whatbyte, SeekSet);
     
-    databuffer.getBytes(s, maxnamelength);     
+    databuffer.getBytes(s, howlong);     
     datafile.write(s, howlong);
     datafile.flush();
 }
@@ -33,6 +33,7 @@ String readstringdata(uint16_t whatbyte, int howlong){
   datafile.read(s2, howlong);
   for ( int i = 0; i < howlong; i++)
     s[i] = char(s2[i]);
+    s[howlong] = 0;
   return String(s);
 }
 
@@ -60,12 +61,12 @@ void write16data(uint16_t whatbyte, uint16_t databuffer){
   datafile.write(&high, 1);
   datafile.write(&low, 1);  
   datafile.flush();
-
  }
  
 void getdatafromfile(){
   if (openspiffs()){
-  rowIndex = read16data(0);                                                   //read the card count from fram 
+  rowIndex = read16data(0);                                                   //read the card count from spiffs 
+  
   uint16_t buffer_offset = recordlength;                                    //start at record 1
     Blynk.virtualWrite(vcount, rowIndex);       // write the rowIndex to the server
     
@@ -95,7 +96,7 @@ void dumpdatafromfile(){
     if ( openspiffs()){
     tempIndex = read16data(0);                                                   //read the card count from fram address 0
     terminal.println("index "+String(tempIndex));
-//  for (int i = 1; i <= tempIndex; i++){                                             // read all the card data
+  for (int i = 1; i <= tempIndex; i++){                                             // read all the card data
     ri = read16data(buffer_offset);
     buffer_offset += 2;
     ch = readstringdata(buffer_offset, maxnamelength);
@@ -106,7 +107,7 @@ void dumpdatafromfile(){
     buffer_offset += 2;
     terminal.println("index: " + String(ri) + " holder:  " + ch + " ID:  " + cId + " flags: " + String(af));
     yield();
-//  }
+  }
   terminal.flush();
   closespiffs();
     }

@@ -25,7 +25,6 @@ BLYNK_WRITE(vcount) {
 BLYNK_READ(vcount)
 {
   Blynk.virtualWrite(vcount, rowIndex);       // write the rowIndex to the server
-     write16data(0, rowIndex);                // write the rowIndex to the fram
 }
 
 // called when the name nameDisplay has had input

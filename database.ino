@@ -59,9 +59,9 @@ void storeCard(int ri, String suid2, String holder, int af) {
     cardHolder[ri] = holder;        // save name of card holder
     accessFlags[ri] = af;
     Blynk.virtualWrite(vcount, rowIndex);                                                    //save the card count on the server
-    write16data(0, rowIndex);                                                                //save the card count in fram at offset 0
+    write16data(0, rowIndex);                                                                //save the card count at offset 0
 
-//  Blynk.virtualWrite(DATASTORE + ri, ri, cardHolder[ri], cardId[ri], accessFlags[ri]);     //save card data on server and in fram
+//  Blynk.virtualWrite(DATASTORE + ri, ri, cardHolder[ri], cardId[ri], accessFlags[ri]);     //save card data on server
     write16data(buffer_offset, ri);
     buffer_offset += 2;
     writestringdata(buffer_offset, maxnamelength, cardHolder[ri]);

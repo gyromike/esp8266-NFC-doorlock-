@@ -35,7 +35,7 @@
 #include <PN532_I2C.h>
 #include <PN532.h>
 #include <NfcAdapter.h>
-#include "Adafruit_FRAM_I2C.h"
+#include <ArduinoOTA.h>
 #include <ESP8266WiFi.h>
 
 /*included for wifi manager
@@ -110,22 +110,20 @@ void setup() {
 
   Wire.setClock(wirespeed);                     // set the Ic2 buss speed
   Serial.begin(serialspeed);                    // open the serial port
-//  Wire.pins(SDA_PIN, SLC_PIN);                  // SDA, SLC pins
+  Wire.pins(SDA_PIN, SLC_PIN);                  // SDA, SLC pins
   Wire.begin();                                 // start the Ic2 buss
   nfc.begin();                                  // init the NFC Hardware
   SPIFFS.begin();
 
   Serial.print(currentTime);
   
-// setup_wifi();
-  
   Blynk.begin(blynk_token, ssid, pass);         // start Blynk
-//  Blynk.config(blynk_token);
-//  startfram();
+  getdatafromfile();
 //  Blynk.syncVirtual(vcount, datapins);          // restore count and card data  This is how all the card data gets restored from the cloud
-  Blynk.syncVirtual(vcount);                    // restore count and card data  This is how all the card data gets restored from the cloud
+//  Blynk.syncVirtual(vcount);                    // restore count
   timer.setInterval(500l, scanNfc);             // scan the NFC every .5 seconds
-//  timer.setInterval(700l, startfram);           // check the FRAM every .7 seconds  
+  ArduinoOTA.setHostname(modulename); // give an name to our module
+  ArduinoOTA.begin(); // OTA initialization 
 }
 
 /**************************************
@@ -137,6 +135,7 @@ void loop()
     Blynk.run();
   } else Blynk.connect(2500l);                // timeout 2.5 seconds
   timer.run();
+  ArduinoOTA.handle();
 }
 
 
