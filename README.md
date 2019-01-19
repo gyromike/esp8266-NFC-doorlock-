@@ -16,7 +16,7 @@ Creative Commons License
     2 slaved locks are supported
     1 master  is used as the scanner for adding cards it can also be used as a lock
 
-you will need three blink tokens.  
+you will need three blynk tokens.  
 One for each lock.  If you have fewer than three it will still work.  
 You must have at least one.  It will act as the master and the lock.
 
