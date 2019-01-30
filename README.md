@@ -13,12 +13,12 @@ Creative Commons License
     in this version the card / nfc data is stored in the SPIFFS memory
 
     20 cards are supported
-    2 slaved locks are supported
+   unlimited slaved locks are supported
     1 master  is used as the scanner for adding cards it can also be used as a lock
 
-you will need three blynk tokens.  
-One for each lock.  If you have fewer than three it will still work.  
-You must have at least one.  It will act as the master and the lock.
+you will need blynk tokens.  
+One for each lock.   
+You must have at least one.  It will act as the master and the lock if it is the only one.
 
     Nodemcu esp8266 and PN532 hardware is used
 
@@ -34,4 +34,4 @@ BLYNK pin map
     v11 is the copy button
     v12 is the copy all button -- it may not be working
     V24 is a value display for the number of valid cards
-    V25 - V45 are reserved for data storage
+    V25 , V26 are bridge data exchange
