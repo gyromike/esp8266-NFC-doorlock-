@@ -26,6 +26,7 @@ bool compairUid(uint8_t uid1[], uint8_t uid2[], uint8_t j) {
 
   return true;
 }
+
 /*****************************************************
    findUid
    takes uid and length
@@ -42,6 +43,7 @@ int findUid(String suid) {
 
   return 0;
 }
+
 /**************************************
   storeCard
   in: row index, card Id, id length, card holder name
@@ -58,10 +60,8 @@ void storeCard(int ri, String suid2, String holder, int af) {
     cardId[ri] = suid2; // save uid as a string
     cardHolder[ri] = holder;        // save name of card holder
     accessFlags[ri] = af;
-    Blynk.virtualWrite(vcount, rowIndex);                                                    //save the card count on the server
-    write16data(0, rowIndex);                                                                //save the card count at offset 0
-
-//  Blynk.virtualWrite(DATASTORE + ri, ri, cardHolder[ri], cardId[ri], accessFlags[ri]);     //save card data on server
+    Blynk.virtualWrite(vcount, rowIndex);                                         //save the card count on the server
+    write16data(0, rowIndex);                                                       //save the card count at offset 0
     write16data(buffer_offset, ri);
     buffer_offset += 2;
     writestringdata(buffer_offset, maxnamelength, cardHolder[ri]);
@@ -75,26 +75,24 @@ void storeCard(int ri, String suid2, String holder, int af) {
   }
 }
 
+
 void getCard(int index) {
-  cardId[0] = cardId[index];                      //get cardId
+  cardId[0] = cardId[index];                      // get cardId
   cardHolder[0] = cardHolder[index];              // get name of card holder
+  accessFlags[0] = accessFlags[index];            // get access flags
 }
 
 
 /***************************************
-   get card id access flags and user name from the cloud
+   get card id access flags and user name from file or the cloud
 
    in:  card Id, card holder name, access flags, index
 
    datastore is the virtual pin for the card data
 **************************************/
 void readFromCloud(int count) {
-  getdatafromfile();
-//  getdatafromfram();
-//  for (int i = 0; i < count; i++) {
-//    Blynk.syncVirtual(DATASTORE + count);                             //send the sync to the data pin to request card data
-//  }
-  getCard(1);
-  Blynk.virtualWrite(namedisplay, cardHolder[0]);
-  Blynk.virtualWrite(cardiddisplay, cardId[0]);
+    getdatafromfile();
+    getCard(1);
+    Blynk.virtualWrite(namedisplay, cardHolder[0]);
+    Blynk.virtualWrite(cardiddisplay, cardId[0]);
 }

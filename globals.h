@@ -9,13 +9,8 @@
    4.0 International License.
 
 */
-//#define BLYNK_PRINT Serial  // Comment this line out to disable prints and save space 
-//#define BLYNK_DEBUG
-
-// only uncoment one at a time
-#define MASTER_LOCK true
-//#define LOCK1_LOCK  true
-//#define LOCK2_LOCK  true
+#define BLYNK_PRINT Serial  // Comment this line out to disable prints and save space 
+#define BLYNK_DEBUG
 /*
    hardware defines
 */
@@ -26,16 +21,11 @@
 /*
                                 PIN MAP for ESP8266
 */
-#define DATASTART   0x0           // start address of data buffer
-#define IC2_FRAM_ADDRESS 0x50     // address of the fram board
+
 #define SDA_PIN     2             // I2C SDA pin
 #define SLC_PIN     14            // I2C SCL pin
+#define RELAY_PIN   D8            // relay output pin
 
-#define RTS_PIN     4             // RTS line for C17A - DB9 pin 7
-#define DTR_PIN     5             // DTR line for C17A - DB9 pin 4
-
-#define RELAY_PIN   8             // relay output pin
-#define LED_PIN     16            // attached LED
 
 
 
@@ -44,6 +34,8 @@
    BLYNK V PIN MAP
 
  ********************************************************************************************/
+#define flagpin         V30
+#define updatepin       V31
 #define clockpin        V1
 #define resetallpin     V2
 #define namedisplay     V3
@@ -52,59 +44,32 @@
 #define terminaldisplay V6
 #define copybutton      V11
 #define copyallbutton   V12
-#define bridgewrite     V7
+#define bridgewrite     V25
+#define bridgewriteall  V26
 #define lockbutton      V8
 #define bridgedata      V9
 #define deletebutton    V10
-#define eventorpin      V14
+#define timeinpin       V14
 #define vcount          V24
-#define DATASTORE       V25
-#define datapins        V25, V26, V27, V28, V29, V30, V31, V32, V33, V34, V35, V36, V37, V38, V39, V40, V41, V42, V43, V44, V45
 
-
-#define maxcards      20
+#define maxcards      50
 #define maxnamelength 20
 #define maxuidlength  15
 #define flagslength   1
 #define recordlength    (4 + maxnamelength + maxuidlength)   // 4 bytes for the two ints + the max string lengths  for the name and uid
+#define DATASTART   0x0           // start address of data buffer
 
 const char*  daystrings[7]  =  {"Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"};
-
+const char*   monthstrings[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 /* BLYNK tokens
 
 */
-char reader_token[] = "88f9aca4374a4e7c9ffb7b84baa8eea2";
-char lock1_token[] = "4b750912ed5744efa7faaf2e09c394d4";
-char lock2_token[] = "fdcf2cc56ef04b7a8a8a0a6fdef59022";
+#define BLYNKSIZE 34
+#define MODULENAMESIZE 128
+char reader_token[BLYNKSIZE];
+char lock_token[BLYNKSIZE];
 
-char readername[] = "nfclockreader";
-char lock1name[] = "nfclock1";
-char lock2name[] = "nfclock2";
-
-#if defined(MASTER_LOCK)
-
-char blynk_token[] = "88f9aca4374a4e7c9ffb7b84baa8eea2";
-char modulename[] = "nfclockreader";
-
-#elif defined(LOCK1_LOCK)
-
-char blynk_token[] = "4b750912ed5744efa7faaf2e09c394d4";
-char modulename[] = "nfclock1";
-
-
-#else
-
-char blynk_token[] = "fdcf2cc56ef04b7a8a8a0a6fdef59022";
-char modulename[] = "nfclock2";
-
-
-#endif
-/*
-    WiFi credentials.
-*/
-
-char ssid[] = "lburton";
-char pass[] = "8018368602";
+char module_name[MODULENAMESIZE+1];
 
 /*
     Global data
@@ -116,25 +81,28 @@ String  SThour;
 String  STmin;
 String  SPhour;
 String  SPmin;
-int     days[7];
+int     days[7] = {0,0,0,0,0,0,0};
+
+long startsecondswd;            
+long stopsecondswd;
+
+
+
 int     flag = 0;
 
 int     cardIndex = 0;
 int     rowIndex = 0;
+
 String  currentTime;
 String  currentDate;
-int talktome = 0;
-
-//define your default values here, if there are different values in config.json, they are overwritten.
-char mqtt_server[40];
-char mqtt_port[6] = "8080";
+String  currentMonth;
+String  currentDay;
 
 //flag for saving wifi data
-bool shouldSaveConfig = false;
+bool shouldSaveConfig = true;
 
 uint32_t versiondata = 0; // NFC hardware version
 String carddatafile = "/carddata.txt";
 File datafile;
-
 
 
