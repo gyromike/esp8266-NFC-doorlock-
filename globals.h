@@ -19,15 +19,18 @@
 #define nfcretries 0x0f     // number of passive retries before timeout on nfc hardware 
 
 /*
-                                PIN MAP for ESP8266
+              hardware PIN MAP for ESP8266
 */
-
 #define SDA_PIN     2             // I2C SDA pin
 #define SLC_PIN     14            // I2C SCL pin
 #define RELAY_PIN   D8            // relay output pin
 
 
-
+// screen information
+#define screenW  128
+#define screenH  64
+#define displayCenterX  screenW/2
+#define displayCenterY  (screenH/2)  
 
 /********************************************************************************************
 
@@ -51,58 +54,80 @@
 #define deletebutton    V10
 #define timeinpin       V14
 #define vcount          V24
-
+/*
+ * data defines
+ */
 #define maxcards      50
 #define maxnamelength 20
 #define maxuidlength  15
 #define flagslength   1
 #define recordlength    (4 + maxnamelength + maxuidlength)   // 4 bytes for the two ints + the max string lengths  for the name and uid
 #define DATASTART   0x0           // start address of data buffer
-
-const char*  daystrings[7]  =  {"Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"};
-const char*   monthstrings[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-/* BLYNK tokens
-
+/* 
+ *  wifi data defines
 */
 #define BLYNKSIZE 34
 #define MODULENAMESIZE 128
-char reader_token[BLYNKSIZE];
-char lock_token[BLYNKSIZE];
-
-char module_name[MODULENAMESIZE+1];
-
 /*
     Global data
 */
 String  cardId[maxcards + 1];
 String  cardHolder[maxcards + 1];
 int     accessFlags[maxcards + 1];
+int     flag = 0;
+int     cardIndex = 0;
+int     rowIndex = 0;
+String carddatafile = "/carddata.txt";      //data file name for NFC card data
+/*
+ * Calander constants
+ */
+const char*  daystrings[7]  =  {"Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"};
+const char*   monthstrings[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+/*
+ * wifi data
+ */
+char reader_token[BLYNKSIZE];
+char lock_token[BLYNKSIZE];
+char module_name[MODULENAMESIZE+1];
+//flag for saving wifi data
+bool shouldSaveConfig = true;
+
+/*
+ * start and stop times
+ */
+long startsecondswd;            
+long stopsecondswd;
+//  times converted to strings
 String  SThour;
 String  STmin;
 String  SPhour;
 String  SPmin;
+//valid days
 int     days[7] = {0,0,0,0,0,0,0};
-
-long startsecondswd;            
-long stopsecondswd;
-
-
-
-int     flag = 0;
-
-int     cardIndex = 0;
-int     rowIndex = 0;
-
+// current time, date, day as strings
 String  currentTime;
 String  currentDate;
 String  currentMonth;
 String  currentDay;
 
-//flag for saving wifi data
-bool shouldSaveConfig = true;
-
 uint32_t versiondata = 0; // NFC hardware version
-String carddatafile = "/carddata.txt";
+/*
+ * objects
+ */
+//file object
 File datafile;
-
+// NFC reader objects
+PN532_I2C pn532i2c(Wire);
+PN532 nfc(pn532i2c);
+// Initialize the OLED display using Wire library
+SSD1306Wire  display(0x3c, 2, 14);
+//create terminal widget instance and attach it to the pin
+WidgetTerminal terminal(terminaldisplay);
+//Create the real time clock instance
+WidgetRTC rtc;
+//create timer instance
+BlynkTimer timer;
+//create bridge instance and assign pins
+WidgetBridge bridge_master(51);
+WidgetBridge bridge_lock(52);
 

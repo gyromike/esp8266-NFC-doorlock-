@@ -5,9 +5,6 @@ void saveConfigCallback () {
   shouldSaveConfig = true;
 }
 
-
-
-
 void startmywifi() {
   if (SPIFFS.exists("/config.json")) {
     //file exists, reading and loading

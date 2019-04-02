@@ -5,7 +5,7 @@ bool openspiffs() {
   if (!datafile) {
     rowIndex = 0;
     datafile = SPIFFS.open(carddatafile, "w+b");  // create new file
-    write16data(0, rowIndex);       //save the card count at offset 0
+    write16data(DATASTART, rowIndex);       //save the card count at offset 0
     Blynk.virtualWrite(vcount, rowIndex);                                         //save the card count on the server
   }
   return datafile;
@@ -71,7 +71,7 @@ void write16data(uint16_t whatbyte, uint16_t databuffer) {
 
 void getdatafromfile() {
   if (openspiffs()) {
-    rowIndex = read16data(0);                                                   //read the card count from spiffs
+    rowIndex = read16data(DATASTART);                                                   //read the card count from spiffs
     uint16_t buffer_offset = recordlength;                                    //start at record 1
     Blynk.virtualWrite(vcount, rowIndex);       // write the rowIndex to the server
     for (int i = 1; i <= rowIndex; i++) {                                            // read all the card data
@@ -98,7 +98,7 @@ void dumpdatafromfile() {
   uint16_t buffer_offset = recordlength;                                    //start at record 1
 
   if ( openspiffs()) {
-    tempIndex = read16data(0);                                                   //read the card count from fram address 0
+    tempIndex = read16data(DATASTART);                                                   //read the card count from fram address 0
     terminal.println("index " + String(tempIndex));
     for (int i = 1; i <= tempIndex; i++) {                                            // read all the card data
       ri = read16data(buffer_offset);

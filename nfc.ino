@@ -10,18 +10,22 @@ void setupnfc() {
     getCurrentTime();
     nfc.setPassiveActivationRetries(nfcretries);  // Set the max number of retry attempts to read from a card
     nfc.SAMConfig();                              // configure board to read RFID tags
+
+
     terminal.println("NFC started");
     terminal.print(currentDay);
     terminal.print(" ");
     terminal.print(currentMonth);
     terminal.print(" ");
-    terminal.print(currentDate);
-    terminal.print(" ");
+    terminal.println(currentDate);
     terminal.println(currentTime);
     terminal.flush();
   }
 
 }
+
+//  display.setFont(ArialMT_Plain_10);
+//  display.drawString(displayCenterX, displayCenterY - 24, currentTime + " " + currentDay + " " + currentMonth); // display time. day, month
 
 /**************************************
   scanNfc
@@ -47,17 +51,16 @@ void scanNfc() {
         // check door valid time/day to see it we should unlock the door
         if (checkactivedoor() or accessFlags[cardIndex]) {
           unlockDoor();                                     // unlock the door if the card was valid
+
+          display.setFont(ArialMT_Plain_10);
+          display.drawString(displayCenterX, displayCenterY - 24 , "Welcome");
+          display.drawString(displayCenterX, displayCenterY + 4, cardHolder[cardIndex]); // display thr card holder on the OLED
+          
           Blynk.virtualWrite(namedisplay, cardHolder[cardIndex]); //display the card holder name on the app
           terminal.print(cardHolder[cardIndex]);  // send debug data to the terminal
           terminal.print(" ");
           terminal.println(cardId[cardIndex]);
-          terminal.print(currentDay);
-          terminal.print(" ");
-          terminal.print(currentMonth);
-          terminal.print(" ");
-          terminal.print(currentDate);
-          terminal.print(" ");
-          terminal.println(currentTime);
+          terminal.println(currentDay + " " + currentMonth + " " + currentDate + " " +  currentTime);
           terminal.flush();
           Blynk.virtualWrite(indexdisplay, cardIndex);  // display the card index on the app
           return;                                       // card found exit

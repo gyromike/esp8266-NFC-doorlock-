@@ -15,9 +15,9 @@ BLYNK_CONNECTED() {
 }
 
 BLYNK_WRITE(vcount) {
-  //  openspiffs();
-  //  rowIndex = read16data(0);                                                 //save the card count in offset 0
-  //  closespiffs();
+  openspiffs();
+  rowIndex = read16data(DATASTART);                                                 //read the card count
+  closespiffs();
 }
 
 
@@ -25,7 +25,7 @@ BLYNK_READ(vcount)
 {
   Blynk.virtualWrite(vcount, rowIndex);                                       // write the rowIndex to the server
   //  openspiffs();
-  //  write16data(0, rowIndex);                                                 //save the card count in fram at offset 0
+  //  write16data(DATASTART, rowIndex);                                                 //save the card count in fram at offset 0
   //  closespiffs();
 }
 
@@ -77,15 +77,13 @@ BLYNK_WRITE(cardiddisplay)
 */
 BLYNK_WRITE(indexdisplay) {
   cardIndex = param.asInt();
-  if (cardIndex > rowIndex)
-    cardIndex = 1;
-  else if (cardIndex = 0)
-    cardIndex = rowIndex;
-  getCard(cardIndex);
-  Blynk.virtualWrite(namedisplay, cardHolder[0]);
-  Blynk.virtualWrite(cardiddisplay, cardId[0]);
-  Blynk.virtualWrite(flagpin, accessFlags[0]);
-  Blynk.virtualWrite(indexdisplay, cardIndex);
+    if (cardIndex > rowIndex)
+        cardIndex = rowIndex;
+    getCard(cardIndex);
+    Blynk.virtualWrite(namedisplay, cardHolder[0]);
+    Blynk.virtualWrite(cardiddisplay, cardId[0]);
+    Blynk.virtualWrite(flagpin, accessFlags[0]);
+    Blynk.virtualWrite(indexdisplay, cardIndex);
 }
 
 BLYNK_WRITE(terminaldisplay)
@@ -93,16 +91,6 @@ BLYNK_WRITE(terminaldisplay)
   dumpdatafromfile();
 }
 
-//BLYNK_WRITE_DEFAULT()
-//{
-//  int pin = request.pin;      // Which pin is handled?
-//  if (pin = terminaldisplay) {
-
-//    dumpdatafromfile();
-
-//  }
-
-//}
 
 /*
    this will copy data to the device with the id sent as param[1]
@@ -190,7 +178,7 @@ BLYNK_WRITE(deletebutton)  //Remove
       cardId[0] = " ";
     }
     openspiffs();
-    write16data(0, rowIndex);                                                 //save the card count in fram at offset 0
+    write16data(DATASTART, rowIndex);                                                 //save the card count in fram at offset 0
     closespiffs();                                                                //save the card count in fram at offset 0
     Blynk.virtualWrite(vcount, rowIndex);           // store the card count on server
     Blynk.virtualWrite(indexdisplay, cardIndex);    // display the card index
@@ -283,7 +271,7 @@ BLYNK_WRITE(resetallpin)  //reset
   Blynk.virtualWrite(vcount, rowIndex);
   Blynk.virtualWrite(indexdisplay, rowIndex);
   openspiffs();
-  write16data(0, rowIndex);                                                 //save the card count in fram at offset 0
+  write16data(DATASTART, rowIndex);                                                 //save the card count in fram at offset 0
   closespiffs();
 
 }
